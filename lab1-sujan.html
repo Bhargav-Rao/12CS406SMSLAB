@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Monte Carlo Simulation </title>
+		<style type="text/css">
+			canvas{
+				border: 2px solid grey;
+			}
+		</style>
+		<script type="text/javascript">
+			max_x = 800;
+			max_y = 400;
+
+			function start()
+			{
+				can = document.getElementById("can");
+
+				clear_canvas();
+
+				cont = can.getContext("2d");
+
+				count = 1;
+
+				end_time = Number(prompt("Enter end time for Simulation"))
+				vf = Number(prompt("Enter velocity of fighter plane"))
+				threshold = Number(prompt("Enter threshold distance which ensures that bomber can be destroyed by fighter"))
+
+				xf = Math.round(Math.random() * max_x)
+				yf = Math.round(Math.random() * max_y)
+
+				console.log("xf = " + xf, "yf = " + yf)
+				xb = Math.round(Math.random() * max_x)
+				yb = Math.round(Math.random() * max_y)
+
+				console.log("xb = " + xb, "yb = " + yb)
+
+				cont.beginPath();
+				cont.strokeStyle = "red";				
+				cont.fillStyle = "red";
+
+				cont.fillText("F", xf, max_y - yf);
+				cont.arc(xf, max_y - yf, threshold, 0, 2 * Math.PI);
+				
+				cont.stroke();
+
+				cont.beginPath();
+
+				cont.fillStyle = "blue";
+				cont.arc(xb, max_y - yb, 10, 0, 2 * Math.PI);
+				
+				cont.fill();
+
+				cont.fillStyle = "white";
+
+				cont.fillText("B", xb, max_y - yb);
+				
+				t = setTimeout(next, 1000);
+			}
+			function next()
+			{
+				console.log("Count = " + count);
+				count++;
+				
+				d = Math.sqrt(Math.pow(xf - xb, 2) + Math.pow(yf - yb, 2))
+				console.log("Distance = " + d)
+
+				if (d <= threshold)
+				{
+					alert("Fighter can hit bomber plane now, Simulation completed.");
+					clearTimeout(t);
+				}
+				else if (count > end_time)
+				{
+					alert("Fighter can't hit bomber plane, Simulation terminated.");
+					clearTimeout(t);
+				}
+				else
+				{
+					clear_canvas();
+
+					cos_theta = (xb - xf) / d;
+					sin_theta = (yb - yf) / d;
+
+					xf = xf + vf * cos_theta;
+					yf = yf + vf * sin_theta;
+					
+					console.log("new_xf = " + xf, "new_yf = " + yf)
+
+					xb = Math.round(Math.random() * max_x)
+					yb = Math.round(Math.random() * max_y)
+
+					console.log("xb = " + xb, "yb = " + yb)
+
+					cont.beginPath();
+					cont.strokeStyle = "red";				
+					cont.fillStyle = "red";
+
+					cont.fillText("F", xf, max_y - yf);
+					cont.arc(xf, max_y - yf, threshold, 0, 2 * Math.PI);
+					
+					cont.stroke();
+
+					cont.beginPath();
+
+					cont.fillStyle = "blue";
+					cont.arc(xb, max_y - yb, 10, 0, 2 * Math.PI);
+					
+					cont.fill();
+
+					cont.fillStyle = "white";
+
+					cont.fillText("B", xb, max_y - yb);
+
+					t = setTimeout(next, 1000);
+				}
+
+			}
+			function clear_canvas() 
+			{
+				can.width = can.width;
+			}
+		</script>
+	</head>
+	<body style = "text-align : center">
+		<h1 style = "text-align : center"> Monte Carlo Simulation </h1>
+		<canvas id = "can" height = "400" width = "800"></canvas><p/>
+		<input type = "button" value = "Start Simulation" onclick = "start()"> </input> 
+	</body>
+</html>
